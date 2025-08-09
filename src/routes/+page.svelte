@@ -1,36 +1,52 @@
 <script lang="ts">
   import Sketch from "$lib/Sketch.svelte";
+  import PerformanceMonitor from "$lib/PerformanceMonitor.svelte";
   import { SKETCH_DATA } from "$lib/sketches.js";
 
   // Mock nav height - in a real app this would come from your nav component
   const navHeight = 64; // Assuming 64px nav height
+  const FPS = 60;
 
   // Example of customizing sketch data
   const customSketchData = {
     ...SKETCH_DATA,
     config: {
       ...SKETCH_DATA.config,
-      fps: 15, // Slower animation for demonstration
+      fps: FPS, // Slower animation for demonstration
     },
     content: {
       ...SKETCH_DATA.content,
       overlayText: "Custom Digital Garden",
-      overlaySubtext: "Running at 15fps for a more relaxed experience.",
+      overlaySubtext: `Running at ${FPS}fps for a more relaxed experience.`,
     },
   };
 </script>
 
 <svelte:head>
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #ffffff;
+    /* Ensure smooth loading */
+    .page-container {
+      min-height: 100vh;
+      background-color: var(--color-white);
+    }
+
+    /* Prevent layout shift during loading */
+    .sketch-container {
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 64px);
     }
   </style>
 </svelte:head>
 
-<div class="w-full">
-  <!-- Full bleed sketch with overlay and tooltip -->
-  <Sketch sketchData={customSketchData} {navHeight} />
+<div class="page-container">
+  <div class="sketch-container">
+    <!-- Full bleed sketch with overlay and tooltip -->
+    <Sketch sketchData={customSketchData} {navHeight} />
+  </div>
+
+  <!-- Performance monitor (only in development) -->
+  {#if import.meta.env.DEV && import.meta.env.MODE === "development"}
+    <PerformanceMonitor />
+  {/if}
 </div>

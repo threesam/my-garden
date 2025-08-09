@@ -33,10 +33,15 @@ export class CellularAutomataSketch {
   private lastFrameTime: number = 0;
   private frameInterval: number;
 
+  // Performance optimizations
+  private imageData: ImageData | null = null;
+  private data: Uint8ClampedArray | null = null;
+  private isDirty: boolean = true;
+
   constructor(canvas: HTMLCanvasElement, config: SketchConfig) {
     this.context = {
       canvas,
-      ctx: canvas.getContext("2d")!,
+      ctx: canvas.getContext("2d", { alpha: false })!, // Optimize for performance
       config,
       isRunning: false,
       animationId: null,
@@ -62,6 +67,7 @@ export class CellularAutomataSketch {
     for (let i = 0; i < this.grid.length; i++) {
       this.grid[i] = Math.random() > 0.7 ? 1 : 0;
     }
+    this.isDirty = true;
   }
 
   private countNeighbors(x: number, y: number): number {
@@ -98,10 +104,14 @@ export class CellularAutomataSketch {
 
     // Swap grids
     [this.grid, this.nextGrid] = [this.nextGrid, this.grid];
+    this.isDirty = true;
   }
 
   private draw(): void {
     const { ctx, config } = this.context;
+
+    // Only redraw if something changed
+    if (!this.isDirty) return;
 
     // Clear canvas with white background
     ctx.fillStyle = "#ffffff";
@@ -112,24 +122,26 @@ export class CellularAutomataSketch {
       config.height * config.cellSize
     );
 
-    // Draw grid lines (very light gray)
-    ctx.strokeStyle = "#f8f9fa";
-    ctx.lineWidth = 1;
+    // Draw grid lines (very light gray) - only if cell size is large enough
+    if (config.cellSize >= 4) {
+      ctx.strokeStyle = "#f8f9fa";
+      ctx.lineWidth = 1;
 
-    // Vertical lines
-    for (let x = 0; x <= config.width; x++) {
-      ctx.beginPath();
-      ctx.moveTo(x * config.cellSize, 0);
-      ctx.lineTo(x * config.cellSize, config.height * config.cellSize);
-      ctx.stroke();
-    }
+      // Vertical lines
+      for (let x = 0; x <= config.width; x++) {
+        ctx.beginPath();
+        ctx.moveTo(x * config.cellSize, 0);
+        ctx.lineTo(x * config.cellSize, config.height * config.cellSize);
+        ctx.stroke();
+      }
 
-    // Horizontal lines
-    for (let y = 0; y <= config.height; y++) {
-      ctx.beginPath();
-      ctx.moveTo(0, y * config.cellSize);
-      ctx.lineTo(config.width * config.cellSize, y * config.cellSize);
-      ctx.stroke();
+      // Horizontal lines
+      for (let y = 0; y <= config.height; y++) {
+        ctx.beginPath();
+        ctx.moveTo(0, y * config.cellSize);
+        ctx.lineTo(config.width * config.cellSize, y * config.cellSize);
+        ctx.stroke();
+      }
     }
 
     // Draw cells (light gray to dark gray)
@@ -146,6 +158,8 @@ export class CellularAutomataSketch {
         }
       }
     }
+
+    this.isDirty = false;
   }
 
   private animate = (currentTime: number): void => {
@@ -180,10 +194,16 @@ export class CellularAutomataSketch {
     const { canvas, config } = this.context;
     canvas.width = config.width * config.cellSize;
     canvas.height = config.height * config.cellSize;
+    this.isDirty = true;
   }
 
   public destroy(): void {
     this.stop();
+    // Clean up memory
+    this.grid = null as any;
+    this.nextGrid = null as any;
+    this.imageData = null;
+    this.data = null;
   }
 }
 
@@ -219,7 +239,7 @@ export const SKETCH_DATA: SketchData = {
   type: "cellular-automata",
   config: {
     fps: 30, // Can be manually changed here
-    cellSize: 8,
+    cellSize: 7,
   },
   content: {
     overlayText: "Digital Garden",

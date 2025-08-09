@@ -18,6 +18,32 @@
   let sketchHeight: number;
   let showTooltip = false;
   let tooltipContainer: HTMLDivElement;
+  let isLoaded = false;
+  let isInitializing = true;
+
+  // Performance optimizations
+  let resizeTimeout: ReturnType<typeof setTimeout>;
+  let isInitialized = false;
+
+  // Debounced resize handler
+  function debouncedResize() {
+    if (resizeTimeout) {
+      clearTimeout(resizeTimeout);
+    }
+    resizeTimeout = setTimeout(() => {
+      if (sketch && isInitialized) {
+        console.log("📐 Resizing sketch...");
+        sketchHeight = window.innerHeight - navHeight;
+        container.style.height = `${sketchHeight}px`;
+
+        // Update canvas dimensions
+        canvas.width = window.innerWidth;
+        canvas.height = sketchHeight;
+
+        sketch.resize();
+      }
+    }, 100); // 100ms debounce
+  }
 
   onMount(() => {
     if (!canvas) return;
@@ -38,7 +64,7 @@
       console.log("✅ Sketch created successfully");
     }
 
-    // Set up intersection observer
+    // Set up intersection observer with performance optimizations
     observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -59,23 +85,18 @@
     );
 
     observer.observe(container);
+    isInitialized = true;
+    isInitializing = false;
 
-    // Handle window resize
-    const handleResize = () => {
-      if (sketch) {
-        console.log("📐 Resizing sketch...");
-        sketchHeight = window.innerHeight - navHeight;
-        container.style.height = `${sketchHeight}px`;
+    // Mark as loaded after a short delay to ensure smooth transition
+    setTimeout(() => {
+      isLoaded = true;
+    }, 200);
 
-        // Update canvas dimensions
-        canvas.width = window.innerWidth;
-        canvas.height = sketchHeight;
+    // Handle window resize with debouncing
+    window.addEventListener("resize", debouncedResize, { passive: true });
 
-        sketch.resize();
-      }
-    };
-
-    // Handle click outside tooltip
+    // Handle click outside tooltip with passive listener
     const handleClickOutside = (event: MouseEvent) => {
       if (
         showTooltip &&
@@ -86,22 +107,39 @@
       }
     };
 
-    window.addEventListener("resize", handleResize);
-    document.addEventListener("click", handleClickOutside);
+    document.addEventListener("click", handleClickOutside, { passive: true });
 
     return () => {
       observer.disconnect();
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", debouncedResize);
       document.removeEventListener("click", handleClickOutside);
+      if (resizeTimeout) {
+        clearTimeout(resizeTimeout);
+      }
     };
   });
 
   onDestroy(() => {
     sketch?.destroy();
+    if (resizeTimeout) {
+      clearTimeout(resizeTimeout);
+    }
   });
 </script>
 
-<div bind:this={container} class="w-full relative">
+<div
+  bind:this={container}
+  class="w-full relative {isLoaded
+    ? 'opacity-100'
+    : 'opacity-0'} transition-opacity duration-500"
+>
+  <!-- Loading placeholder to prevent layout shift -->
+  {#if isInitializing}
+    <div class="absolute inset-0 bg-gray-100 flex items-center justify-center">
+      <div class="text-gray-500 text-sm">Loading sketch...</div>
+    </div>
+  {/if}
+
   <canvas bind:this={canvas} class="w-full h-full block"></canvas>
 
   <!-- Black overlay when tooltip is active -->
@@ -111,18 +149,22 @@
     ></div>
   {/if}
 
-  <!-- Overlay text -->
+  <!-- Overlay text with improved positioning -->
   {#if sketchData.content.overlayText || sketchData.content.overlaySubtext}
-    <div class="absolute inset-0 flex items-center justify-center">
-      <div class="text-center text-black z-10 px-6">
+    <div
+      class="absolute inset-0 flex items-center justify-center pointer-events-none"
+    >
+      <div class="text-center text-black z-10 px-6 max-w-4xl mx-auto">
         {#if sketchData.content.overlayText}
-          <h1 class="text-5xl md:text-7xl font-bold mb-6 drop-shadow-lg">
+          <h1
+            class="text-5xl md:text-7xl font-bold mb-6 drop-shadow-lg font-loading"
+          >
             {sketchData.content.overlayText}
           </h1>
         {/if}
         {#if sketchData.content.overlaySubtext}
           <p
-            class="text-xl md:text-2xl max-w-2xl mx-auto drop-shadow-lg opacity-90"
+            class="text-xl md:text-2xl max-w-2xl mx-auto drop-shadow-lg opacity-90 font-loading"
           >
             {sketchData.content.overlaySubtext}
           </p>
@@ -138,6 +180,7 @@
       <button
         on:click={() => (showTooltip = !showTooltip)}
         class="w-10 h-10 bg-white bg-opacity-90 backdrop-blur-sm rounded-full shadow-lg hover:bg-opacity-100 transition-all duration-200 flex items-center justify-center"
+        aria-label="Toggle information tooltip"
       >
         <svg
           class="w-5 h-5 text-gray-700"
@@ -177,6 +220,7 @@
           <button
             on:click={() => (showTooltip = false)}
             class="absolute top-2 right-2 w-6 h-6 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors"
+            aria-label="Close tooltip"
           >
             <svg
               class="w-3 h-3 text-gray-600"
