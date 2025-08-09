@@ -7,7 +7,10 @@
   aria-label="Site footer"
 >
   <div>
-    <p class="text-sm text-muted">"Add a thoughtful quote here."</p>
+    <blockquote class="text-sm text-muted">
+      <p>"A garden is not made in a year; indeed, it is the labor of a lifetime."</p>
+      <cite>— Seneca</cite>
+    </blockquote>
   </div>
   <div>
     <h2 class="font-medium mb-2 text-sm">Contact</h2>

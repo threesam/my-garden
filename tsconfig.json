@@ -1,9 +1,19 @@
 {
   "extends": "./.svelte-kit/tsconfig.json",
   "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noUncheckedIndexedAccess": true,
-    "skipLibCheck": true
-  }
+    "module": "Preserve",
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true
+  },
+  "include": ["**/*.ts", "**/*.tsx", "**/*.svelte"],
+  "exclude": ["node_modules"]
 }
