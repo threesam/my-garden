@@ -3,10 +3,10 @@
   import PerformanceMonitor from "$lib/PerformanceMonitor.svelte";
   import { SKETCH_DATA } from "$lib/sketches.js";
 
-  const FPS = 120;
+  const FPS = 60;
 
   // Example of customizing sketch data
-  const customSketchData = {
+  const customSketchData = $state({
     ...SKETCH_DATA,
     config: {
       ...SKETCH_DATA.config,
@@ -17,7 +17,7 @@
       overlayText: "The Garden",
       overlaySubtext: `A place to think and grow.`,
     },
-  };
+  });
 </script>
 
 <div class="min-h-screen bg-white">

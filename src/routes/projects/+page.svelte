@@ -1,5 +1,7 @@
 <script lang="ts">
-  export let data: { projects: Array<{ _id: string; title: string; summary?: string }> };
+  const { data } = $props<{
+    data: { projects: Array<{ _id: string; title: string; summary?: string }> };
+  }>();
 </script>
 
 <section class="px-6 py-12 max-w-4xl mx-auto">

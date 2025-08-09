@@ -1,11 +1,11 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
-  let fps = 0;
-  let memoryUsage = 0;
-  let isVisible = false;
-  let frameCount = 0;
-  let lastTime = performance.now();
+  let fps = $state(0);
+  let memoryUsage = $state(0);
+  let isVisible = $state(false);
+  let frameCount = $state(0);
+  let lastTime = $state(performance.now());
 
   onMount(() => {
     // FPS counter

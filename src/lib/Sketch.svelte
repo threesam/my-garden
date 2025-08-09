@@ -7,22 +7,22 @@
     SKETCH_DATA,
   } from "./sketches.js";
 
-  export let sketchData: SketchData = SKETCH_DATA;
+  const { sketchData = SKETCH_DATA } = $props<{ sketchData?: SketchData }>();
 
   let canvas: HTMLCanvasElement;
   let sketch: CellularAutomataSketch;
   let container: HTMLDivElement;
   let observer: IntersectionObserver;
-  let isVisible = false;
-  let sketchHeight: number;
-  let showTooltip = false;
-  let tooltipContainer: HTMLDivElement;
-  let isLoaded = false;
-  let isInitializing = true;
+  let isVisible = $state(false);
+  let sketchHeight = $state(0);
+  let showTooltip = $state(false);
+  let tooltipContainer = $state<HTMLDivElement>();
+  let isLoaded = $state(false);
+  let isInitializing = $state(true);
 
   // Performance optimizations
   let resizeTimeout: ReturnType<typeof setTimeout>;
-  let isInitialized = false;
+  let isInitialized = $state(false);
 
   // Debounced resize handler
   function debouncedResize() {
@@ -109,7 +109,7 @@
     document.addEventListener("click", handleClickOutside, { passive: true });
 
     return () => {
-      observer.disconnect();
+      observer?.disconnect();
       window.removeEventListener("resize", debouncedResize);
       document.removeEventListener("click", handleClickOutside);
       if (resizeTimeout) {
@@ -177,7 +177,7 @@
     <div bind:this={tooltipContainer} class="absolute bottom-4 right-4 z-20">
       <!-- Info button -->
       <button
-        on:click={() => (showTooltip = !showTooltip)}
+        onclick={() => (showTooltip = !showTooltip)}
         class="border-2 border-black w-10 h-10 bg-white bg-opacity-90 backdrop-blur-sm rounded-full shadow-lg hover:bg-opacity-100 transition-all duration-200 flex items-center justify-center"
         aria-label="Toggle information tooltip"
       >
@@ -217,7 +217,7 @@
 
           <!-- Close button -->
           <button
-            on:click={() => (showTooltip = false)}
+            onclick={() => (showTooltip = false)}
             class="absolute top-2 right-2 w-6 h-6 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors"
             aria-label="Close tooltip"
           >
