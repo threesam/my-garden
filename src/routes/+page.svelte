@@ -16,8 +16,8 @@
     },
     content: {
       ...SKETCH_DATA.content,
-      overlayText: "Custom Digital Garden",
-      overlaySubtext: `Running at ${FPS}fps for a more relaxed experience.`,
+      overlayText: "My Garden",
+      overlaySubtext: `A place to think and grow.`,
     },
   };
 </script>

@@ -179,11 +179,11 @@
       <!-- Info button -->
       <button
         on:click={() => (showTooltip = !showTooltip)}
-        class="w-10 h-10 bg-white bg-opacity-90 backdrop-blur-sm rounded-full shadow-lg hover:bg-opacity-100 transition-all duration-200 flex items-center justify-center"
+        class="border-2 border-black w-10 h-10 bg-white bg-opacity-90 backdrop-blur-sm rounded-full shadow-lg hover:bg-opacity-100 transition-all duration-200 flex items-center justify-center"
         aria-label="Toggle information tooltip"
       >
         <svg
-          class="w-5 h-5 text-gray-700"
+          class="w-8 h-8 text-gray-700"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -192,7 +192,7 @@
             stroke-linecap="round"
             stroke-linejoin="round"
             stroke-width="2"
-            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            d="M13 16h-1v-4h-1m1-4h.01"
           ></path>
         </svg>
       </button>
