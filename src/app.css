@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+@theme {
+  /* minimalist palette */
+  --color-background: #ffffff;
+  --color-foreground: #3b3c36; /* black olive */
+  --color-muted: #9aa0a6;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+:root {
+  color: var(--color-foreground);
+  background-color: var(--color-background);
+}
+
+html, body, #app {
+  height: 100%;
+}
