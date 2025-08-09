@@ -3,7 +3,7 @@
   import PerformanceMonitor from "$lib/PerformanceMonitor.svelte";
   import { SKETCH_DATA } from "$lib/sketches.js";
 
-  const FPS = 60;
+  const FPS = 120;
 
   // Example of customizing sketch data
   const customSketchData = {
@@ -14,31 +14,14 @@
     },
     content: {
       ...SKETCH_DATA.content,
-      overlayText: "My Garden",
+      overlayText: "The Garden",
       overlaySubtext: `A place to think and grow.`,
     },
   };
 </script>
 
-<svelte:head>
-  <style>
-    /* Ensure smooth loading */
-    .page-container {
-      min-height: 100vh;
-      background-color: var(--color-white);
-    }
-
-    /* Prevent layout shift during loading */
-    .sketch-container {
-      position: relative;
-      width: 100%;
-      height: calc(100vh - 64px);
-    }
-  </style>
-</svelte:head>
-
-<div class="page-container">
-  <div class="sketch-container">
+<div class="min-h-screen bg-white">
+  <div class="relative w-full h-screen">
     <!-- Full bleed sketch with overlay and tooltip -->
     <Sketch sketchData={customSketchData} />
   </div>

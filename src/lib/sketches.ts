@@ -34,8 +34,6 @@ export class CellularAutomataSketch {
   private frameInterval: number;
 
   // Performance optimizations
-  private imageData: ImageData | null = null;
-  private data: Uint8ClampedArray | null = null;
   private isDirty: boolean = true;
 
   constructor(canvas: HTMLCanvasElement, config: SketchConfig) {
