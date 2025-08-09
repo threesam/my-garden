@@ -8,7 +8,6 @@
   } from "./sketches.js";
 
   export let sketchData: SketchData = SKETCH_DATA;
-  export let navHeight: number = 0;
 
   let canvas: HTMLCanvasElement;
   let sketch: CellularAutomataSketch;
@@ -33,7 +32,7 @@
     resizeTimeout = setTimeout(() => {
       if (sketch && isInitialized) {
         console.log("📐 Resizing sketch...");
-        sketchHeight = window.innerHeight - navHeight;
+        sketchHeight = window.innerHeight;
         container.style.height = `${sketchHeight}px`;
 
         // Update canvas dimensions
@@ -51,7 +50,7 @@
     console.log("🎨 Creating cellular automata sketch...");
 
     // Calculate sketch height based on screen minus nav
-    sketchHeight = window.innerHeight - navHeight;
+    sketchHeight = window.innerHeight;
     container.style.height = `${sketchHeight}px`;
 
     // Set canvas dimensions to match container

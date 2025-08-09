@@ -3,8 +3,6 @@
   import PerformanceMonitor from "$lib/PerformanceMonitor.svelte";
   import { SKETCH_DATA } from "$lib/sketches.js";
 
-  // Mock nav height - in a real app this would come from your nav component
-  const navHeight = 64; // Assuming 64px nav height
   const FPS = 60;
 
   // Example of customizing sketch data
@@ -42,7 +40,7 @@
 <div class="page-container">
   <div class="sketch-container">
     <!-- Full bleed sketch with overlay and tooltip -->
-    <Sketch sketchData={customSketchData} {navHeight} />
+    <Sketch sketchData={customSketchData} />
   </div>
 
   <!-- Performance monitor (only in development) -->

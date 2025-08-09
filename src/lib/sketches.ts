@@ -80,7 +80,7 @@ export class CellularAutomataSketch {
           (x + dx + this.context.config.width) % this.context.config.width;
         const ny =
           (y + dy + this.context.config.height) % this.context.config.height;
-        count += this.grid[this.idx(nx, ny)];
+        count += this.grid[this.idx(nx, ny)] || 0;
       }
     }
     return count;
@@ -161,7 +161,7 @@ export class CellularAutomataSketch {
           );
 
           // Map distance to darkness (0 = black, 1 = white) - reversed
-          const darknessRatio = Math.min(distance / maxDistance, 1);
+          const darknessRatio = Math.min(distance / maxDistance - 0.13, 1);
 
           // Convert to grayscale color (255 = white, 0 = black) - reversed
           const grayValue = Math.round((1 - darknessRatio) * 255);
