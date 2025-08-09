@@ -19,5 +19,7 @@ Create `.env` with:
 - `PUBLIC_SANITY_DATASET=production`
 
 Studio is available under `/studio` and uses the embedded config.
+
 # garden
+
 # my-garden
