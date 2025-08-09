@@ -144,11 +144,30 @@ export class CellularAutomataSketch {
       }
     }
 
-    // Draw cells (light gray to dark gray)
-    ctx.fillStyle = "#6b7280"; // Medium gray
+    // Calculate center of the grid
+    const centerX = config.width / 2;
+    const centerY = config.height / 2;
+    const maxDistance = Math.sqrt(centerX * centerX + centerY * centerY);
+
+    // Draw cells with darkness based on distance from center
     for (let y = 0; y < config.height; y++) {
       for (let x = 0; x < config.width; x++) {
         if (this.grid[this.idx(x, y)] === 1) {
+          // Calculate distance from center
+          const distanceX = Math.abs(x - centerX);
+          const distanceY = Math.abs(y - centerY);
+          const distance = Math.sqrt(
+            distanceX * distanceX + distanceY * distanceY
+          );
+
+          // Map distance to darkness (0 = black, 1 = white) - reversed
+          const darknessRatio = Math.min(distance / maxDistance, 1);
+
+          // Convert to grayscale color (255 = white, 0 = black) - reversed
+          const grayValue = Math.round((1 - darknessRatio) * 255);
+          const color = `rgb(${grayValue}, ${grayValue}, ${grayValue})`;
+
+          ctx.fillStyle = color;
           ctx.fillRect(
             x * config.cellSize + 1,
             y * config.cellSize + 1,
