@@ -15,7 +15,8 @@
 		"bundle-analyzer": "vite build && npx vite-bundle-analyzer"
 	},
 	"dependencies": {
-		"svelte": "5.38.0"
+		"svelte": "5.38.0",
+		"tone": "^15.1.22"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.1.4",
